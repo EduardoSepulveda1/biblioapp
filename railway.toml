@@ -1,2 +1,2 @@
 [deploy]
-startCommand = "echo PORT=$PORT && gunicorn app:app --bind 0.0.0.0:$PORT"
+startCommand = "gunicorn app:app --bind 0.0.0.0:8080"
