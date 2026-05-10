@@ -1,14 +1,14 @@
 import mysql.connector
 from mysql.connector import Error
+import os
 
-# ── Configuración ────────────────────────────────────────────
-# Ajusta user y password según tu instalación de MySQL
 DB_CONFIG = {
-    'host':      'localhost',
-    'user':      'root',
-    'password':  '112233',           # <-- cambia por tu contraseña
-    'database':  'biblioapp',
-    'charset':   'utf8mb4',
+    'host':     os.environ.get('MYSQLHOST', 'localhost'),
+    'user':     os.environ.get('MYSQLUSER', 'root'),
+    'password': os.environ.get('MYSQLPASSWORD', '112233'),
+    'database': os.environ.get('MYSQLDATABASE', 'biblioapp'),
+    'port':     int(os.environ.get('MYSQLPORT', 3306)),
+    'charset':  'utf8mb4',
     'collation': 'utf8mb4_unicode_ci',
 }
 
