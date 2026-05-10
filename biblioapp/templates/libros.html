@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}Libros{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="mb-0">Libros</h2>
+    <small class="text-muted">{{ libros|length }} libros en catálogo</small>
+  </div>
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLibro">
+    + Agregar libro
+  </button>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>#</th>
+        <th>Título</th>
+        <th>Autor</th>
+        <th>Año</th>
+        <th>ISBN</th>
+        <th>Estado</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for l in libros %}
+      <tr>
+        <td class="text-muted">{{ l.id_libro }}</td>
+        <td><strong>{{ l.titulo }}</strong></td>
+        <td>{{ l.autor }}</td>
+        <td>{{ l.anio or '—' }}</td>
+        <td><code class="text-muted">{{ l.isbn or '—' }}</code></td>
+        <td>
+          {% if l.disponible %}
+            <span class="badge bg-success">Disponible</span>
+          {% else %}
+            <span class="badge bg-warning text-dark">Prestado</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if l.disponible %}
+          <form method="POST" action="/libros/eliminar/{{ l.id_libro }}"
+                onsubmit="return confirm('¿Eliminar «{{ l.titulo }}»?')">
+            <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal agregar libro -->
+<div class="modal fade" id="modalLibro" tabindex="-1" aria-labelledby="modalLibroLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="/libros/agregar">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalLibroLabel">Agregar libro</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Título <span class="text-danger">*</span></label>
+            <input name="titulo" class="form-control" placeholder="Ej: El nombre de la rosa" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Autor <span class="text-danger">*</span></label>
+            <input name="autor" class="form-control" placeholder="Ej: Umberto Eco" required>
+          </div>
+          <div class="row">
+            <div class="col mb-3">
+              <label class="form-label">Año</label>
+              <input name="anio" type="number" min="1000" max="2099"
+                     class="form-control" placeholder="Ej: 1980">
+            </div>
+            <div class="col mb-3">
+              <label class="form-label">ISBN</label>
+              <input name="isbn" class="form-control" placeholder="Ej: 978-84-...">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Agregar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Socios{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="mb-0">Socios</h2>
+    <small class="text-muted">{{ socios|length }} socios registrados</small>
+  </div>
+  <button class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#modalSocio">
+    + Registrar socio
+  </button>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>#</th>
+        <th>Nombre completo</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>Registro</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in socios %}
+      <tr>
+        <td class="text-muted">{{ s.id_socio }}</td>
+        <td><strong>{{ s.apellido }}</strong>, {{ s.nombre }}</td>
+        <td>{{ s.email }}</td>
+        <td>{{ s.telefono or '—' }}</td>
+        <td>{{ s.fecha_registro }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal registrar socio -->
+<div class="modal fade" id="modalSocio" tabindex="-1" aria-labelledby="modalSocioLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="/socios/agregar">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalSocioLabel">Registrar socio</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col mb-3">
+              <label class="form-label">Nombre <span class="text-danger">*</span></label>
+              <input name="nombre" class="form-control" placeholder="Ej: Ana" required>
+            </div>
+            <div class="col mb-3">
+              <label class="form-label">Apellido <span class="text-danger">*</span></label>
+              <input name="apellido" class="form-control" placeholder="Ej: González" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email <span class="text-danger">*</span></label>
+            <input name="email" type="email" class="form-control"
+                   placeholder="Ej: ana@correo.cl" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Teléfono</label>
+            <input name="telefono" class="form-control" placeholder="+56912345678">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-info text-white">Registrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block title %}Préstamos{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="mb-0">Préstamos</h2>
+  <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalPrestamo">
+    + Registrar préstamo
+  </button>
+</div>
+
+<!-- Préstamos activos -->
+<h5 class="mb-3">
+  Préstamos activos
+  <span class="badge bg-warning text-dark ms-1">{{ activos|length }}</span>
+</h5>
+
+{% if activos %}
+<div class="table-responsive mb-5">
+  <table class="table table-hover align-middle">
+    <thead class="table-warning">
+      <tr>
+        <th>#</th><th>Socio</th><th>Libro</th><th>Desde</th><th>Días</th><th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in activos %}
+      <tr>
+        <td class="text-muted">{{ p.id_prestamo }}</td>
+        <td>
+          <strong>{{ p.socio }}</strong><br>
+          <small class="text-muted">{{ p.email }}</small>
+        </td>
+        <td>
+          {{ p.titulo }}<br>
+          <small class="text-muted">{{ p.autor }}</small>
+        </td>
+        <td>{{ p.fecha_prestamo }}</td>
+        <td>
+          <span class="badge {% if p.dias_prestado > 14 %}bg-danger{% elif p.dias_prestado > 7 %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+            {{ p.dias_prestado }} días
+          </span>
+        </td>
+        <td>
+          <form method="POST" action="/prestamos/devolver/{{ p.id_prestamo }}">
+            <button class="btn btn-sm btn-success">✓ Devolver</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+  <div class="alert alert-success mb-5">No hay préstamos activos en este momento.</div>
+{% endif %}
+
+<!-- Historial completo -->
+<h5 class="mb-3">Historial completo</h5>
+<div class="table-responsive">
+  <table class="table table-sm table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th>#</th><th>Socio</th><th>Libro</th><th>Préstamo</th><th>Devolución</th><th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for h in historial %}
+      <tr>
+        <td class="text-muted">{{ h.id_prestamo }}</td>
+        <td>{{ h.socio }}</td>
+        <td>{{ h.titulo }}</td>
+        <td>{{ h.fecha_prestamo }}</td>
+        <td>{{ h.fecha_devolucion or '—' }}</td>
+        <td>
+          {% if h.estado == 'Devuelto' %}
+            <span class="badge bg-success">Devuelto</span>
+          {% else %}
+            <span class="badge bg-warning text-dark">Activo</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal registrar préstamo -->
+<div class="modal fade" id="modalPrestamo" tabindex="-1" aria-labelledby="modalPrestamoLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="/prestamos/registrar">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalPrestamoLabel">Registrar préstamo</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Libro disponible <span class="text-danger">*</span></label>
+            <select name="id_libro" class="form-select" required>
+              <option value="">— Selecciona un libro —</option>
+              {% for l in libros_disponibles %}
+                <option value="{{ l.id_libro }}">{{ l.titulo }}</option>
+              {% endfor %}
+            </select>
+            {% if not libros_disponibles %}
+              <div class="form-text text-danger">No hay libros disponibles actualmente.</div>
+            {% endif %}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Socio <span class="text-danger">*</span></label>
+            <select name="id_socio" class="form-select" required>
+              <option value="">— Selecciona un socio —</option>
+              {% for s in socios %}
+                <option value="{{ s.id_socio }}">{{ s.apellido }}, {{ s.nombre }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-warning"
+                  {% if not libros_disponibles %}disabled{% endif %}>
+            Registrar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

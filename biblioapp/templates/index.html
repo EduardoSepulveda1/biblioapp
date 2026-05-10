@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="mb-1">Dashboard</h2>
+<p class="text-muted mb-4">Resumen general del sistema de biblioteca</p>
+
+<div class="row g-4 mb-5">
+  <div class="col-sm-6 col-lg-3">
+    <div class="card stat-card border-0 shadow-sm text-center p-4">
+      <div class="stat-number text-primary">{{ stats.total_libros }}</div>
+      <div class="stat-label">Total libros</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="card stat-card border-0 shadow-sm text-center p-4">
+      <div class="stat-number text-success">{{ stats.libros_disponibles }}</div>
+      <div class="stat-label">Disponibles</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="card stat-card border-0 shadow-sm text-center p-4">
+      <div class="stat-number text-info">{{ stats.total_socios }}</div>
+      <div class="stat-label">Socios registrados</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="card stat-card border-0 shadow-sm text-center p-4">
+      <div class="stat-number text-warning">{{ stats.prestamos_activos }}</div>
+      <div class="stat-label">Préstamos activos</div>
+    </div>
+  </div>
+</div>
+
+<h5 class="mb-3">Acceso rápido</h5>
+<div class="row g-3">
+  <div class="col-md-4">
+    <a href="/libros" class="btn btn-outline-primary w-100 py-3 fs-5">📖 Gestionar Libros</a>
+  </div>
+  <div class="col-md-4">
+    <a href="/socios" class="btn btn-outline-info w-100 py-3 fs-5">👤 Gestionar Socios</a>
+  </div>
+  <div class="col-md-4">
+    <a href="/prestamos" class="btn btn-outline-warning w-100 py-3 fs-5">🔄 Gestionar Préstamos</a>
+  </div>
+</div>
+{% endblock %}
